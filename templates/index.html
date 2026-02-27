@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DairyControl – Prueba Gratis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+<header class="wrap">
+    <nav class="nav">
+        <div class="logo">DairyControl</div>
+        <a class="nav-cta" href="#registro">Empezar prueba gratis</a>
+    </nav>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+    <div class="hero-left">
+        <h1>Controla tus costos y mejora tu rentabilidad.</h1>
+
+        <p class="sub">
+            Registra gastos, detecta fugas y toma mejores decisiones con un tablero claro y simple.
+        </p>
+
+        <div class="hero-bullets">
+            <div class="bullet">✅ Ahorra tiempo cada semana</div>
+            <div class="bullet">✅ Alertas de gastos fuera de control</div>
+            <div class="bullet">✅ Reportes listos para decisión</div>
+        </div>
+
+        <a class="btn" href="#registro">Empezar prueba gratis</a>
+        <p class="micro">Prueba gratis · Sin tarjeta · Cancela cuando quieras</p>
+    </div>
+
+    <div class="hero-right" id="registro">
+        <div class="card">
+            <h2>Empieza tu prueba gratis</h2>
+            <p class="card-sub">Déjanos tu nombre y correo y te damos acceso.</p>
+
+            <form action="/signup" method="POST" class="form">
+                
+                <label>
+                    Nombre
+                    <input type="text" name="name" placeholder="Tu nombre" required>
+                </label>
+
+                <label>
+                    Correo
+                    <input type="email" name="email" placeholder="tu@correo.com" required>
+                </label>
+
+                <label class="check">
+                    <input type="checkbox" required>
+                    Acepto el aviso de privacidad.
+                </label>
+
+                <button class="btn btn-full" type="submit">
+                    Empezar prueba gratis
+                </button>
+
+                <p class="micro">Te contactaremos con los siguientes pasos.</p>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer class="wrap footer">
+    <div>© DairyControl</div>
+    <div><a href="#">Aviso de privacidad</a></div>
+</footer>
+
+</body>
+</html>
+
