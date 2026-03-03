@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DairyControl – Prueba Gratis</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -41,16 +41,16 @@
             <h2>Empieza tu prueba gratis</h2>
             <p class="card-sub">Déjanos tu nombre y correo y te damos acceso.</p>
 
-            <form action="/signup" method="POST" class="form">
+            <form id="signup-form" action="/signup" method="POST" class="form">
                 
                 <label>
                     Nombre
-                    <input type="text" name="name" placeholder="Tu nombre" required>
+                    <input id="name-input" type="text" name="name" placeholder="Tu nombre" required>
                 </label>
 
                 <label>
                     Correo
-                    <input type="email" name="email" placeholder="tu@correo.com" required>
+                    <input id="email-input" type="email" name="email" placeholder="tu@correo.com" required>
                 </label>
 
                 <label class="check">
@@ -70,6 +70,34 @@
 </section>
 
 </main>
+
+<!-- Demo removed — keeping original landing design only -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+<script>
+    // QUICK START: replace the placeholders with your project's values from the Supabase dashboard.
+    // For a secure production setup, keep keys on the server and call Supabase from backend code.
+    const SUPABASE_URL = 'https://ounsvqlbkwlzmatzodow.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bnN2cWxia3dsem1hdHpvZG93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MTI3ODYsImV4cCI6MjA4ODA4ODc4Nn0.SW0bXcRomaDBj8qhuoz0_qxCO7bgdIVpzN7IxiB5E5s';
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Hook the main signup form so it inserts into `contacts` using Supabase client
+    document.getElementById('signup-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const name = document.getElementById('name-input').value.trim();
+        const email = document.getElementById('email-input').value.trim();
+        if (!name || !email) return alert('Completa nombre y correo');
+
+        const { data, error } = await sb.from('contacts').insert([{ name, email }]);
+        if (error) return alert('Error al guardar: ' + error.message);
+
+        // Clear form
+        document.getElementById('name-input').value = '';
+        document.getElementById('email-input').value = '';
+        alert('Gracias — te hemos registrado');
+    });
+</script>
 
 <footer class="wrap footer">
     <div>© DairyControl</div>
