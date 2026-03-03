@@ -1,6 +1,9 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/templates/index.html" },
-    { "source": "/admin", "destination": "/templates/admin.html" }
-  ]
+    { "source": "/index.html", "destination": "/templates/index.html" },
+    { "source": "/admin", "destination": "/templates/admin.html" },
+    { "source": "/templates/:path*", "destination": "/templates/:path*" }
+  ],
+  "cleanUrls": true
 }
