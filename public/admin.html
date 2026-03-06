@@ -42,6 +42,14 @@
               <div id="cost-per-liter" class="text-2xl font-bold text-primary">$0 / L</div>
             </div>
           </div>
+
+          <!-- Cost vs Production chart -->
+          <div class="mt-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h3 class="font-bold text-gray-700 mb-4">Tendencia de Costos vs Producción</h3>
+              <div style="height: 300px;">
+                  <canvas id="costChart"></canvas>
+              </div>
+          </div>
         </div>
         <div id="view-register" class="hidden space-y-6">
           <h1 class="text-2xl font-bold">Registrar Gasto</h1>
@@ -121,26 +129,124 @@
         </div>
       </main>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
     <script>
       // Replace with your Supabase values or keep the anon key for quick admin (not for public usage)
       const SUPABASE_URL = 'https://ounsvqlbkwlzmatzodow.supabase.co';
       const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bnN2cWxia3dsem1hdHpvZG93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MTI3ODYsImV4cCI6MjA4ODA4ODc4Nn0.SW0bXcRomaDBj8qhuoz0_qxCO7bgdIVpzN7IxiB5E5s';
+
       const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       document.getElementById('sb-url').textContent = SUPABASE_URL;
+
+      // UI routing
       const views = ['dashboard','register','sim','plans'];
-      function show(view){ views.forEach(v=>{ const el = document.getElementById('view-' + v); if(el) el.classList.toggle('hidden', v !== view); }); }
+      function show(view){
+        views.forEach(v=>{
+          const el = document.getElementById('view-' + v);
+          if(el) el.classList.toggle('hidden', v !== view);
+        });
+      }
       document.getElementById('btn-dashboard').addEventListener('click', ()=> show('dashboard'));
       document.getElementById('btn-register').addEventListener('click', ()=> show('register'));
       document.getElementById('btn-sim').addEventListener('click', ()=> show('sim'));
       document.getElementById('btn-plans').addEventListener('click', ()=> show('plans'));
-      async function fetchExpenses(){ const { data, error } = await sb.from('expenses').select('id,category,amount,liters,created_at'); if(error){ console.error(error); return []; } return data || []; }
-      async function refreshDashboard(){ const rows = await fetchExpenses(); const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0); const liters = rows.reduce((s,r)=> s + Number(r.liters || 0), 0); const costPerLiter = liters ? (total / liters) : 0; document.getElementById('total-expense').textContent = '$' + total.toFixed(2); document.getElementById('total-liters').textContent = liters.toFixed(2) + ' L'; document.getElementById('cost-per-liter').textContent = '$' + costPerLiter.toFixed(2) + ' / L'; document.getElementById('sim-current-total').textContent = '$' + total.toFixed(2); updateSimulator(); }
-      document.getElementById('expense-form').addEventListener('submit', async function(e){ e.preventDefault(); const category = document.getElementById('cat').value; const amount = parseFloat(document.getElementById('amount').value) || 0; const liters = parseFloat(document.getElementById('liters').value) || 0; const { data, error } = await sb.from('expenses').insert([{ category, amount, liters }]); if(error){ alert('Error: ' + error.message); return; } alert('Gasto guardado'); document.getElementById('expense-form').reset(); await refreshDashboard(); show('dashboard'); });
+
+      // Fetch and compute
+      async function fetchExpenses(){
+        const { data, error } = await sb.from('expenses').select('id,category,amount,liters,created_at');
+        if(error){ console.error(error); return []; }
+        return data || [];
+      }
+
+      async function refreshDashboard(){
+        const rows = await fetchExpenses();
+        const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const liters = rows.reduce((s,r)=> s + Number(r.liters || 0), 0);
+        const costPerLiter = liters ? (total / liters) : 0;
+        document.getElementById('total-expense').textContent = '$' + total.toFixed(2);
+        document.getElementById('total-liters').textContent = liters.toFixed(2) + ' L';
+        document.getElementById('cost-per-liter').textContent = '$' + costPerLiter.toFixed(2) + ' / L';
+
+        // simulator initial values
+        document.getElementById('sim-current-total').textContent = '$' + total.toFixed(2);
+        updateSimulator();
+
+        // Prepare data for Chart.js (group by date)
+        try{
+          const grouped = {};
+          rows.forEach(r => {
+            const d = r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : (r.createdAt ? new Date(r.createdAt).toISOString().split('T')[0] : 'unknown');
+            if(!grouped[d]) grouped[d] = {amount:0, liters:0};
+            grouped[d].amount += Number(r.amount || 0);
+            grouped[d].liters += Number(r.liters || 0);
+          });
+          const labels = Object.keys(grouped).sort();
+          const dataAmount = labels.map(l => grouped[l].amount);
+          const dataLiters = labels.map(l => grouped[l].liters);
+
+          if(window.costChart){
+            window.costChart.data.labels = labels;
+            window.costChart.data.datasets[0].data = dataAmount;
+            window.costChart.data.datasets[1].data = dataLiters;
+            window.costChart.update();
+          } else {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            window.costChart = new Chart(ctx, {
+              data: {
+                labels: labels,
+                datasets: [
+                  { type: 'bar', label: 'Gasto (MXN)', data: dataAmount, backgroundColor: '#1460CC' },
+                  { type: 'line', label: 'Litros', data: dataLiters, borderColor: '#10B981', backgroundColor: 'transparent', yAxisID: 'y1' }
+                ]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  y: { position: 'left', title: { display: true, text: 'MXN' } },
+                  y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Litros' } }
+                }
+              }
+            });
+          }
+        }catch(e){ console.error('Chart render error', e); }
+      }
+
+      // Register expense
+      document.getElementById('expense-form').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const category = document.getElementById('cat').value;
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const liters = parseFloat(document.getElementById('liters').value) || 0;
+
+        const { data, error } = await sb.from('expenses').insert([{ category, amount, liters }]);
+        if(error){ alert('Error: ' + error.message); return; }
+        alert('Gasto guardado');
+        document.getElementById('expense-form').reset();
+        await refreshDashboard();
+        show('dashboard');
+      });
+
       document.getElementById('clear-form').addEventListener('click', ()=> document.getElementById('expense-form').reset());
-      const simSlider = document.getElementById('sim-slider'); const simPercent = document.getElementById('sim-percent'); simSlider.addEventListener('input', ()=>{ simPercent.textContent = simSlider.value + '%'; updateSimulator(); });
-      async function updateSimulator(){ const pct = parseFloat(simSlider.value) || 0; const rows = await fetchExpenses(); const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0); const foodTotal = rows.filter(r=> r.category === 'Alimento').reduce((s,r)=> s + Number(r.amount || 0), 0); const newFood = foodTotal * (1 + pct/100); const newTotal = total - foodTotal + newFood; document.getElementById('sim-new-total').textContent = '$' + newTotal.toFixed(2); }
-      refreshDashboard(); show('dashboard');
+
+      // Simulator
+      const simSlider = document.getElementById('sim-slider');
+      const simPercent = document.getElementById('sim-percent');
+      simSlider.addEventListener('input', ()=>{ simPercent.textContent = simSlider.value + '%'; updateSimulator(); });
+
+      async function updateSimulator(){
+        const pct = parseFloat(simSlider.value) || 0;
+        const rows = await fetchExpenses();
+        const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const foodTotal = rows.filter(r=> r.category === 'Alimento').reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const newFood = foodTotal * (1 + pct/100);
+        const newTotal = total - foodTotal + newFood;
+        document.getElementById('sim-new-total').textContent = '$' + newTotal.toFixed(2);
+      }
+
+      // Initial load
+      refreshDashboard();
+      show('dashboard');
     </script>
   </body>
 </html>
