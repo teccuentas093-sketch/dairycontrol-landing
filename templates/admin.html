@@ -1,69 +1,236 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DairyControl — Admin</title>
-  <style>
-    body{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial; background:#f6f7fb; margin:0;}
-    .wrap{max-width:1000px; margin:40px auto; padding:0 16px;}
-    .top{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
-    h1{margin:0; font-size:22px;}
-    .btn{display:inline-block; padding:10px 14px; border-radius:10px; background:#2e62d6; color:#fff; text-decoration:none; font-weight:600;}
-    .btn.secondary{background:#111827;}
-    .card{background:#fff; border-radius:16px; box-shadow:0 10px 30px rgba(15,23,42,.08); padding:16px; margin-top:16px;}
-    table{width:100%; border-collapse:collapse;}
-    th,td{padding:12px 10px; border-bottom:1px solid #eef0f6; text-align:left; font-size:14px;}
-    th{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#6b7280;}
-    .muted{color:#6b7280; font-size:13px;}
-    .badge{display:inline-block; background:#e8efff; color:#2e62d6; padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px;}
-    .empty{padding:20px; text-align:center; color:#6b7280;}
-    .row-actions{display:flex; gap:10px; flex-wrap:wrap;}
-    .back{color:#2e62d6; text-decoration:none; font-weight:600;}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="top">
-      <div>
-        <a class="back" href="/">← Volver a la landing</a>
-        <h1>Panel de Leads — DairyControl</h1>
-        <div class="muted">Aquí ves los registros guardados en tu SQLite local.</div>
-      </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DairyControl — Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Tailwind custom color to match landing
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: '#1460CC' }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Small helper to constrain content */
+      .sidebar { min-width: 220px; }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div class="min-h-screen flex">
+      <!-- Sidebar -->
+      <aside class="sidebar bg-white border-r p-6">
+        <div class="mb-6">
+          <div class="text-2xl font-bold text-primary">DairyControl</div>
+          <div class="text-sm text-gray-500">Portal</div>
+        </div>
 
-      <div class="row-actions">
-        <span class="badge">Total: {{ leads|length }}</span>
-        <a class="btn secondary" href="/admin/export">Descargar CSV</a>
-      </div>
+        <nav class="space-y-2">
+          <button id="btn-dashboard" class="w-full text-left px-4 py-2 rounded-lg bg-primary text-white font-semibold">Dashboard</button>
+          <button id="btn-register" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">Registrar Gasto</button>
+          <button id="btn-sim" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">Simulador</button>
+          <button id="btn-plans" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">Planes</button>
+        </nav>
+
+        <div class="mt-6 text-xs text-gray-500">Conectado a: <span id="sb-url" class="break-all"></span></div>
+      </aside>
+
+      <!-- Main -->
+      <main class="flex-1 p-8">
+        <div id="view-dashboard" class="space-y-6">
+          <h1 class="text-2xl font-bold">Dashboard</h1>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-6 bg-white rounded-lg shadow">
+              <div class="text-sm text-gray-500">Gasto Total (MXN)</div>
+              <div id="total-expense" class="text-2xl font-bold text-primary">$0</div>
+            </div>
+
+            <div class="p-6 bg-white rounded-lg shadow">
+              <div class="text-sm text-gray-500">Litros Totales</div>
+              <div id="total-liters" class="text-2xl font-bold text-primary">0 L</div>
+            </div>
+
+            <div class="p-6 bg-white rounded-lg shadow">
+              <div class="text-sm text-gray-500">Costo por Litro</div>
+              <div id="cost-per-liter" class="text-2xl font-bold text-primary">$0 / L</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Register Expense -->
+        <div id="view-register" class="hidden space-y-6">
+          <h1 class="text-2xl font-bold">Registrar Gasto</h1>
+          <div class="bg-white p-6 rounded-lg shadow max-w-md">
+            <form id="expense-form" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Categoría</label>
+                <select id="cat" class="mt-1 block w-full rounded-md border-gray-300" required>
+                  <option value="Alimento">Alimento</option>
+                  <option value="Veterinaria">Veterinaria</option>
+                  <option value="Energía">Energía</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Monto (MXN)</label>
+                <input id="amount" type="number" step="0.01" class="mt-1 block w-full rounded-md border-gray-300" required />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Litros producidos ese día</label>
+                <input id="liters" type="number" step="0.01" class="mt-1 block w-full rounded-md border-gray-300" required />
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md font-semibold">Guardar</button>
+                <button type="button" id="clear-form" class="px-4 py-2 border rounded-md">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Simulator -->
+        <div id="view-sim" class="hidden space-y-6">
+          <h1 class="text-2xl font-bold">Simulador: impacto del aumento en Alimento</h1>
+          <div class="bg-white p-6 rounded-lg shadow max-w-2xl">
+            <label class="block text-sm text-gray-600">Aumento en costo de Alimento: <span id="sim-percent">10%</span></label>
+            <input id="sim-slider" type="range" min="0" max="50" value="10" class="w-full mt-2" />
+
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-gray-50 rounded">
+                <div class="text-sm text-gray-500">Gasto Total Actual</div>
+                <div id="sim-current-total" class="text-xl font-bold text-primary">$0</div>
+              </div>
+
+              <div class="p-4 bg-gray-50 rounded">
+                <div class="text-sm text-gray-500">Gasto Total Simulado</div>
+                <div id="sim-new-total" class="text-xl font-bold text-primary">$0</div>
+              </div>
+            </div>
+
+            <div class="mt-4 text-sm text-gray-600">Nota: el simulador asume que el aumento aplica solo a gastos con categoría <strong>Alimento</strong>.</div>
+          </div>
+        </div>
+
+        <!-- Plans -->
+        <div id="view-plans" class="hidden space-y-6">
+          <h1 class="text-2xl font-bold">Planes</h1>
+          <div class="bg-white p-6 rounded-lg shadow max-w-3xl">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="text-sm text-gray-500 uppercase">
+                  <th>Plan</th>
+                  <th>Precio MXN</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t">
+                  <td class="py-3 font-semibold">Básico</td>
+                  <td class="py-3">$990</td>
+                  <td class="py-3 text-sm text-gray-600">Herramientas básicas para control de costos.</td>
+                </tr>
+                <tr class="border-t">
+                  <td class="py-3 font-semibold">Estándar</td>
+                  <td class="py-3">$1,990</td>
+                  <td class="py-3 text-sm text-gray-600">Reportes y alertas avanzadas.</td>
+                </tr>
+                <tr class="border-t">
+                  <td class="py-3 font-semibold">Profesional</td>
+                  <td class="py-3">$3,999</td>
+                  <td class="py-3 text-sm text-gray-600">Todo lo anterior + integraciones y soporte.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <div class="card">
-      {% if leads|length == 0 %}
-        <div class="empty">Aún no hay leads. Prueba registrarte en la landing.</div>
-      {% else %}
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for l in leads %}
-              <tr>
-                <td>{{ l["id"] }}</td>
-                <td>{{ l["name"] }}</td>
-                <td>{{ l["email"] }}</td>
-                <td>{{ l["created_at"] }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% endif %}
-    </div>
-  </div>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+    <script>
+      // Replace with your Supabase values or keep the anon key for quick admin (not for public usage)
+      const SUPABASE_URL = 'https://ounsvqlbkwlzmatzodow.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bnN2cWxia3dsem1hdHpvZG93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MTI3ODYsImV4cCI6MjA4ODA4ODc4Nn0.SW0bXcRomaDBj8qhuoz0_qxCO7bgdIVpzN7IxiB5E5s';
+
+      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      document.getElementById('sb-url').textContent = SUPABASE_URL;
+
+      // UI routing
+      const views = ['dashboard','register','sim','plans'];
+      function show(view){
+        views.forEach(v=>{
+          const el = document.getElementById('view-' + v);
+          if(el) el.classList.toggle('hidden', v !== view);
+        });
+      }
+      document.getElementById('btn-dashboard').addEventListener('click', ()=> show('dashboard'));
+      document.getElementById('btn-register').addEventListener('click', ()=> show('register'));
+      document.getElementById('btn-sim').addEventListener('click', ()=> show('sim'));
+      document.getElementById('btn-plans').addEventListener('click', ()=> show('plans'));
+
+      // Fetch and compute
+      async function fetchExpenses(){
+        const { data, error } = await sb.from('expenses').select('id,category,amount,liters,created_at');
+        if(error){ console.error(error); return []; }
+        return data || [];
+      }
+
+      async function refreshDashboard(){
+        const rows = await fetchExpenses();
+        const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const liters = rows.reduce((s,r)=> s + Number(r.liters || 0), 0);
+        const costPerLiter = liters ? (total / liters) : 0;
+        document.getElementById('total-expense').textContent = '$' + total.toFixed(2);
+        document.getElementById('total-liters').textContent = liters.toFixed(2) + ' L';
+        document.getElementById('cost-per-liter').textContent = '$' + costPerLiter.toFixed(2) + ' / L';
+
+        // simulator initial values
+        document.getElementById('sim-current-total').textContent = '$' + total.toFixed(2);
+        updateSimulator();
+      }
+
+      // Register expense
+      document.getElementById('expense-form').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const category = document.getElementById('cat').value;
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const liters = parseFloat(document.getElementById('liters').value) || 0;
+
+        const { data, error } = await sb.from('expenses').insert([{ category, amount, liters }]);
+        if(error){ alert('Error: ' + error.message); return; }
+        alert('Gasto guardado');
+        document.getElementById('expense-form').reset();
+        await refreshDashboard();
+        show('dashboard');
+      });
+
+      document.getElementById('clear-form').addEventListener('click', ()=> document.getElementById('expense-form').reset());
+
+      // Simulator
+      const simSlider = document.getElementById('sim-slider');
+      const simPercent = document.getElementById('sim-percent');
+      simSlider.addEventListener('input', ()=>{ simPercent.textContent = simSlider.value + '%'; updateSimulator(); });
+
+      async function updateSimulator(){
+        const pct = parseFloat(simSlider.value) || 0;
+        const rows = await fetchExpenses();
+        const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const foodTotal = rows.filter(r=> r.category === 'Alimento').reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const newFood = foodTotal * (1 + pct/100);
+        const newTotal = total - foodTotal + newFood;
+        document.getElementById('sim-new-total').textContent = '$' + newTotal.toFixed(2);
+      }
+
+      // Initial load
+      refreshDashboard();
+      show('dashboard');
+    </script>
+  </body>
 </html>
 
