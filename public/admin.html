@@ -94,15 +94,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3">
                 <div class="bg-blue-600 p-16 text-white square-card border-none">
                     <p class="uppercase text-[10px] font-black tracking-widest mb-4 opacity-70">Gasto Mensual</p>
-                    <h3 class="text-5xl font-black">$128,500</h3>
+                    <h3 id="gasto-mensual" class="text-5xl font-black">$0</h3>
                 </div>
                 <div class="bg-white p-16 text-slate-900 border-y-2 border-x-0 border-slate-100 square-card">
                     <p class="text-slate-400 uppercase text-[10px] font-black tracking-widest mb-4">Litros Producidos</p>
-                    <h3 class="text-5xl font-black">4,500 L</h3>
+                    <h3 id="litros-producidos" class="text-5xl font-black">0 L</h3>
                 </div>
                 <div class="bg-slate-900 p-16 text-white square-card border-none">
                     <p class="text-blue-500 uppercase text-[10px] font-black tracking-widest mb-4">Costo / Litro</p>
-                    <h3 class="text-5xl font-black">$28.56</h3>
+                    <h3 id="costo-por-l" class="text-5xl font-black">$0.00</h3>
                 </div>
             </div>
             <div class="p-10 border border-slate-100 shadow-2xl">
@@ -172,6 +172,57 @@
             const res = (base + (base * (val/100) * 0.6)).toFixed(2);
             document.getElementById('simResult').innerText = '$' + res;
         }
+    </script>
+    <script>
+        // Use the server-side Next.js API at /api/expenses (server-protected)
+        async function fetchExpensesFromApi(){
+            try{
+                const res = await fetch('/api/expenses');
+                if(!res.ok){ console.error('API error', res.status); return []; }
+                const data = await res.json();
+                return data || [];
+            }catch(e){ console.error(e); return []; }
+        }
+
+        async function loadMetrics(){
+            try{
+                const rows = await fetchExpensesFromApi();
+                const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
+                const liters = rows.reduce((s,r)=> s + Number(r.liters || 0), 0);
+                const costPer = liters ? (total / liters) : 0;
+                document.getElementById('gasto-mensual').textContent = '$' + total.toFixed(2);
+                document.getElementById('litros-producidos').textContent = liters.toFixed(2) + ' L';
+                document.getElementById('costo-por-l').textContent = '$' + costPer.toFixed(2);
+
+                // group by month-year
+                const grouped = {};
+                rows.forEach(r=>{
+                    const d = r.created_at ? new Date(r.created_at) : new Date();
+                    const m = d.toLocaleString('es-ES', { month: 'short', year: 'numeric' });
+                    if(!grouped[m]) grouped[m] = 0;
+                    grouped[m] += Number(r.amount || 0);
+                });
+                const labels = Object.keys(grouped).sort((a,b)=> new Date(a) - new Date(b));
+                const dataPoints = labels.map(l=> grouped[l]);
+
+                if(window.mainChart){
+                    window.mainChart.data.labels = labels;
+                    window.mainChart.data.datasets[0].data = dataPoints;
+                    window.mainChart.update();
+                } else {
+                    const ctx2 = document.getElementById('mainChart').getContext('2d');
+                    window.mainChart = new Chart(ctx2, {
+                        type: 'bar',
+                        data: { labels, datasets: [{ label: 'Gasto Mensual (MXN)', data: dataPoints, backgroundColor: '#2563eb' }] },
+                        options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } } }
+                    });
+                }
+            }catch(e){ console.error(e); }
+        }
+
+        // load on start and poll
+        loadMetrics();
+        setInterval(loadMetrics, 30000);
     </script>
 </body>
 </html>

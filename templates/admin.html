@@ -168,14 +168,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
     <script>
-      // Replace with your Supabase values or keep the anon key for quick admin (not for public usage)
-      const SUPABASE_URL = 'https://ounsvqlbkwlzmatzodow.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91bnN2cWxia3dsem1hdHpvZG93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MTI3ODYsImV4cCI6MjA4ODA4ODc4Nn0.SW0bXcRomaDBj8qhuoz0_qxCO7bgdIVpzN7IxiB5E5s';
-
-      const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      document.getElementById('sb-url').textContent = SUPABASE_URL;
+      // Point the UI to the server-side API
+      document.getElementById('sb-url').textContent = '/api/expenses';
 
       // UI routing
       const views = ['dashboard','register','sim','plans'];
@@ -190,11 +185,13 @@
       document.getElementById('btn-sim').addEventListener('click', ()=> show('sim'));
       document.getElementById('btn-plans').addEventListener('click', ()=> show('plans'));
 
-      // Fetch and compute
+      // Fetch and compute via server API
       async function fetchExpenses(){
-        const { data, error } = await sb.from('expenses').select('id,category,amount,liters,created_at');
-        if(error){ console.error(error); return []; }
-        return data || [];
+        try{
+          const res = await fetch('/api/expenses');
+          if(!res.ok){ console.error('API error', res.status); return []; }
+          return await res.json();
+        }catch(e){ console.error(e); return []; }
       }
 
       async function refreshDashboard(){
@@ -250,19 +247,25 @@
         }catch(e){ console.error('Chart render error', e); }
       }
 
-      // Register expense
+      // Register expense via server API
       document.getElementById('expense-form').addEventListener('submit', async function(e){
         e.preventDefault();
         const category = document.getElementById('cat').value;
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const liters = parseFloat(document.getElementById('liters').value) || 0;
 
-        const { data, error } = await sb.from('expenses').insert([{ category, amount, liters }]);
-        if(error){ alert('Error: ' + error.message); return; }
-        alert('Gasto guardado');
-        document.getElementById('expense-form').reset();
-        await refreshDashboard();
-        show('dashboard');
+        try{
+          const res = await fetch('/api/expenses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category, amount, liters })
+          });
+          if(!res.ok){ const err = await res.text(); alert('Error: ' + err); return; }
+          alert('Gasto guardado');
+          document.getElementById('expense-form').reset();
+          await refreshDashboard();
+          show('dashboard');
+        }catch(err){ console.error(err); alert('Error conectando con la API'); }
       });
 
       document.getElementById('clear-form').addEventListener('click', ()=> document.getElementById('expense-form').reset());
