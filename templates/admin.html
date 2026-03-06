@@ -50,6 +50,7 @@
       <main class="flex-1 p-8">
         <div id="view-dashboard" class="space-y-6">
           <h1 class="text-2xl font-bold">Dashboard</h1>
+          <h2 class="text-xl font-extrabold text-gray-700">Calcula tus costos y gastos</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="p-6 bg-white rounded-lg shadow">
@@ -65,6 +66,24 @@
             <div class="p-6 bg-white rounded-lg shadow">
               <div class="text-sm text-gray-500">Costo por Litro</div>
               <div id="cost-per-liter" class="text-2xl font-bold text-primary">$0 / L</div>
+            </div>
+          </div>
+
+          <!-- Operational & Financial Metrics input -->
+          <div class="mt-6 bg-white p-6 rounded-lg shadow max-w-3xl">
+            <h3 class="font-bold mb-4">Ingresar litros para cálculo</h3>
+            <div class="flex items-center gap-4">
+              <input id="litros-calc" type="number" step="0.01" placeholder="Litros producidos (ej. 1200)" class="px-3 py-2 border rounded-md w-48" />
+              <button id="recalc-btn" class="px-4 py-2 bg-primary text-white rounded-md">Recalcular costo / litro</button>
+              <div id="cost-per-liter-manual" class="ml-6 text-lg font-bold text-primary">$0 / L</div>
+            </div>
+          </div>
+          <div class="mt-4 bg-white p-4 rounded text-sm text-gray-700">
+            <strong>Educación financiera:</strong>
+            <div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div><strong>Activo:</strong> Lo que posees y genera valor (terrenos, maquinaria).</div>
+              <div><strong>Pasivo:</strong> Lo que debes (préstamos, deudas).</div>
+              <div><strong>Capital:</strong> Diferencia entre activos y pasivos — patrimonio real.</div>
             </div>
           </div>
 
@@ -85,10 +104,20 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Categoría</label>
                 <select id="cat" class="mt-1 block w-full rounded-md border-gray-300" required>
-                  <option value="Alimento">Alimento</option>
-                  <option value="Veterinaria">Veterinaria</option>
-                  <option value="Energía">Energía</option>
+                  <option value="Alimentacion">Alimentación</option>
+                  <option value="Mano de Obra">Mano de Obra</option>
+                  <option value="Salud Animal">Salud Animal</option>
+                  <option value="Energia y Combustible">Energía y Combustible</option>
+                  <option value="Agua y Riego">Agua y Riego</option>
+                  <option value="Mantenimiento">Mantenimiento</option>
+                  <option value="Transporte">Transporte</option>
+                  <option value="Administracion">Administración</option>
+                  <option value="Impuestos">Impuestos</option>
+                  <option value="Inversion y Expansion">Inversión y Expansión</option>
+                  <option value="Otros">Otros Gastos</option>
                 </select>
+                <input type="hidden" id="subcat-input" />
+                <div class="mt-2 text-sm text-gray-600">Subcategoría: <span id="selected-subcat">(ninguna)</span> — Código contable: <span id="account-code">—</span></div>
               </div>
 
               <div>
@@ -106,6 +135,18 @@
                 <button type="button" id="clear-form" class="px-4 py-2 border rounded-md">Limpiar</button>
               </div>
             </form>
+          </div>
+        </div>
+
+        <!-- Category panel with subcategories -->
+        <div class="mt-8 bg-white p-6 rounded-lg shadow">
+          <h3 class="font-bold mb-4">Categorías de Gastos (selecciona para ver subcategorías)</h3>
+          <div id="category-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- Buttons will be injected by JS -->
+          </div>
+          <div id="subcat-panel" class="mt-4 hidden bg-gray-50 p-4 rounded">
+            <div id="subcat-title" class="font-semibold mb-2"></div>
+            <div id="subcat-list" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
           </div>
         </div>
 
@@ -247,22 +288,84 @@
         }catch(e){ console.error('Chart render error', e); }
       }
 
-      // Register expense via server API
+      // Category definitions and accounting code mapping
+      const CATEGORY_DEFS = [
+        { key: 'Alimentacion', label: 'Alimentación', sub: ['Sorgo','Alfalfa','Forraje','Alimento balanceado','Minerales'], code: '601', note: '60% aproximado del costo' },
+        { key: 'Mano de Obra', label: 'Mano de Obra', sub: ['Sueldos','Jornaleros','Bonos','Prestaciones','IMSS'], code: '602' },
+        { key: 'Salud Animal', label: 'Salud Animal', sub: ['Veterinario','Medicamentos','Vacunas','Inseminación'], code: '603' },
+        { key: 'Energia y Combustible', label: 'Energía y Combustible', sub: ['Electricidad','Diesel','Gas','Maquinaria'], code: '604' },
+        { key: 'Agua y Riego', label: 'Agua y Riego', sub: ['Pozo','Sistema de riego','Bombas'], code: '605' },
+        { key: 'Mantenimiento', label: 'Mantenimiento', sub: ['Reparación de maquinaria','Corrales','Instalaciones'], code: '606' },
+        { key: 'Transporte', label: 'Transporte', sub: ['Fletes','Acarreos','Combustible transporte'], code: '607' },
+        { key: 'Administracion', label: 'Administración', sub: ['Contabilidad','Software','Servicios profesionales'], code: '608' },
+        { key: 'Impuestos', label: 'Impuestos', sub: ['ISR','Impuesto sobre nómina','Predial'], code: '609' },
+        { key: 'Inversion y Expansion', label: 'Inversión y Expansión', sub: ['Terrenos','Construcción','Maquinaria nueva'], code: '610', excludeFromCost:true },
+        { key: 'Otros', label: 'Otros Gastos', sub: ['Campo libre'], code: '699' }
+      ];
+
+      function renderCategoryGrid(){
+        const grid = document.getElementById('category-grid');
+        grid.innerHTML = '';
+        CATEGORY_DEFS.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'px-4 py-3 bg-gray-50 border rounded text-left font-semibold';
+          btn.textContent = cat.label + (cat.note ? ' •' : '');
+          btn.dataset.key = cat.key;
+          btn.addEventListener('click', ()=> showSubcats(cat.key));
+          grid.appendChild(btn);
+        });
+      }
+
+      function showSubcats(key){
+        const cat = CATEGORY_DEFS.find(c=> c.key === key);
+        if(!cat) return;
+        document.getElementById('subcat-title').textContent = cat.label;
+        const list = document.getElementById('subcat-list');
+        list.innerHTML = '';
+        cat.sub.forEach(s=>{
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'px-3 py-2 border rounded text-sm text-left';
+          b.textContent = s;
+          b.addEventListener('click', ()=> selectSubcat(cat, s));
+          list.appendChild(b);
+        });
+        document.getElementById('subcat-panel').classList.remove('hidden');
+      }
+
+      function selectSubcat(cat, sub){
+        document.getElementById('selected-subcat').textContent = sub;
+        document.getElementById('account-code').textContent = cat.code;
+        document.getElementById('subcat-input').value = sub;
+        // set main select to category key
+        const sel = document.getElementById('cat');
+        sel.value = cat.key;
+      }
+
+      renderCategoryGrid();
+
+      // Register expense via server API — include subcategory in stored category string
       document.getElementById('expense-form').addEventListener('submit', async function(e){
         e.preventDefault();
         const category = document.getElementById('cat').value;
+        const subcat = document.getElementById('subcat-input').value || '';
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const liters = parseFloat(document.getElementById('liters').value) || 0;
+        const payloadCategory = subcat ? `${category} - ${subcat}` : category;
 
         try{
           const res = await fetch('/api/expenses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category, amount, liters })
+            body: JSON.stringify({ category: payloadCategory, amount, liters })
           });
           if(!res.ok){ const err = await res.text(); alert('Error: ' + err); return; }
           alert('Gasto guardado');
           document.getElementById('expense-form').reset();
+          document.getElementById('selected-subcat').textContent = '(ninguna)';
+          document.getElementById('account-code').textContent = '—';
+          document.getElementById('subcat-input').value = '';
           await refreshDashboard();
           show('dashboard');
         }catch(err){ console.error(err); alert('Error conectando con la API'); }
@@ -279,11 +382,20 @@
         const pct = parseFloat(simSlider.value) || 0;
         const rows = await fetchExpenses();
         const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
-        const foodTotal = rows.filter(r=> r.category === 'Alimento').reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const foodTotal = rows.filter(r=> /aliment/i.test(r.category)).reduce((s,r)=> s + Number(r.amount || 0), 0);
         const newFood = foodTotal * (1 + pct/100);
         const newTotal = total - foodTotal + newFood;
         document.getElementById('sim-new-total').textContent = '$' + newTotal.toFixed(2);
       }
+
+      // Recalculate cost per liter from manual litros input, excluding Inversión
+      document.getElementById('recalc-btn').addEventListener('click', async ()=>{
+        const litrosVal = parseFloat(document.getElementById('litros-calc').value) || 0;
+        const rows = await fetchExpenses();
+        const total = rows.filter(r => !/inversion/i.test(r.category)).reduce((s,r)=> s + Number(r.amount || 0), 0);
+        const costPer = litrosVal ? (total / litrosVal) : 0;
+        document.getElementById('cost-per-liter-manual').textContent = '$' + costPer.toFixed(2) + ' / L';
+      });
 
       // Initial load
       refreshDashboard();
