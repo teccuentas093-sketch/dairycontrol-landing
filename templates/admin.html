@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DairyControl — Portal</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DairyControl Pro | Portal</title>
     <meta name="description" content="DAIRYCONTROL — Control de costos y producción láctea." />
     <meta property="og:title" content="DAIRYCONTROL — Control Total" />
     <meta property="og:description" content="Control de costos y producción para productores lecheros. Visualiza tendencias y simula impactos." />
@@ -11,703 +11,6 @@
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="/Dairy1-poster.svg" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Tailwind custom color to match landing
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: { primary: '#1460CC' }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Small helper to constrain content */
-      .sidebar { min-width: 220px; }
-    </style>
-  </head>
-  <body class="bg-gray-50 text-gray-900">
-    <div class="min-h-screen flex">
-      <!-- Sidebar -->
-      <aside class="sidebar bg-white border-r p-6">
-        <div class="mb-6">
-          <div class="text-2xl font-bold text-primary">DairyControl</div>
-          <div class="text-sm text-gray-500">Portal</div>
-        </div>
-
-        <nav class="space-y-2">
-          <button id="btn-dashboard" class="w-full text-left px-4 py-2 rounded-lg bg-primary text-white font-semibold">Dashboard</button>
-          <button id="btn-register" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">Registrar Gasto</button>
-          <button id="btn-sim" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">Simulador</button>
-          <button id="btn-plans" class="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100">Planes</button>
-        </nav>
-
-        <div class="mt-6 text-xs text-gray-500">Conectado a: <span id="sb-url" class="break-all"></span></div>
-      </aside>
-
-      <!-- Main -->
-      <main class="flex-1 p-8">
-        <div id="view-dashboard" class="space-y-6">
-          <h1 class="text-2xl font-bold">Dashboard</h1>
-          <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8 text-center shadow-sm">
-            <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
-            <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
-
-            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
-              <div class="flex flex-col text-left">
-                <label class="font-bold text-gray-700 mb-1">¿Cuánto gastaste? ($ MXN)</label>
-                <input id="quick-gasto" type="number" placeholder="Ej. 5000" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
-              </div>
-
-              <div class="flex flex-col text-left">
-                <label class="font-bold text-gray-700 mb-1">¿Cuántos litros produjiste?</label>
-                <input id="quick-litros" type="number" placeholder="Ej. 1200" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
-              </div>
-
-              <button id="btn-quick-save" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 h-14">
-                Calcular y Guardar
-              </button>
-            </div>
-          </div>
-          ```
-
-4. Presiona **Cmd + S** para guardar. 
-5. Abre la página en tu navegador (pegando la ruta en la barra de hasta arriba, no en Google).
-
-Haz esto y dime si por fin ves tu hermoso cuadro azul de bienvenida en la pantalla. ¡Ya casi coronamos este paso!
-          <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8 text-center shadow-sm">
-            <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
-            <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
-
-            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
-              <div class="flex flex-col text-left">
-                <label class="font-bold text-gray-700 mb-1">¿Cuánto gastaste? ($ MXN)</label>
-                <input id="quick-gasto" type="number" placeholder="Ej. 5000" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
-              </div>
-
-              <div class="flex flex-col text-left">
-                <label class="font-bold text-gray-700 mb-1">¿Cuántos litros produjiste?</label>
-                <input id="quick-litros" type="number" placeholder="Ej. 1200" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
-              </div>
-
-              <button id="btn-quick-save" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 h-14">
-                Calcular y Guardar
-              </button>
-            </div>
-          </div>
-          ```
-<div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8 text-center shadow-sm">
-            <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
-            <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
-
-            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
-              <div class="flex flex-col text-left">
-                <label class="font-bold text-gray-700 mb-1">¿Cuánto gastaste? ($ MXN)</label>
-                <input id="quick-gasto" type="number" placeholder="Ej. 5000" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
-              </div>
-
-              <div class="flex flex-col text-left">
-                <label class="font-bold text-gray-700 mb-1">¿Cuántos litros produjiste?</label>
-                <input id="quick-litros" type="number" placeholder="Ej. 1200" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
-              </div>
-
-              <button id="btn-quick-save" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 h-14">
-                Calcular y Guardar
-              </button>
-            </div>
-          </div>
-          ```
-          <h2 class="text-xl font-extrabold text-gray-700">Calcula tus costos y gastos</h2>
-
-          <!-- Three massive square blocks (single vertical flow) -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white shadow rounded-none p-6 flex flex-col items-start justify-between aspect-square">
-              <div class="text-sm text-gray-500 uppercase tracking-widest">Gasto Mensual</div>
-              <div class="text-lg text-gray-600">Lo que ha salido del rancho este mes</div>
-              <div id="total-expense" class="mt-4 text-4xl font-black text-primary">$0</div>
-            </div>
-
-            <div class="bg-white shadow rounded-none p-6 flex flex-col items-start justify-between aspect-square">
-              <div class="text-sm text-gray-500 uppercase tracking-widest">Litros Producidos</div>
-              <div class="text-lg text-gray-600">Tu volumen de producción actual</div>
-              <div id="total-liters" class="mt-4 text-4xl font-black text-primary">0 L</div>
-            </div>
-
-            <div class="bg-white shadow rounded-none p-6 flex flex-col items-start justify-between aspect-square">
-              <div class="text-sm text-gray-500 uppercase tracking-widest">Costo por Litro</div>
-              <div class="text-lg text-gray-600">Tu métrica de éxito</div>
-              <div id="cost-per-liter" class="mt-4 text-4xl font-black text-primary">$0 / L</div>
-            </div>
-          </div>
-
-          <!-- Operational & Financial Metrics input -->
-          <div class="mt-6 bg-white p-6 rounded-lg shadow max-w-3xl">
-            <h3 class="font-bold mb-4">Ingresar litros para cálculo</h3>
-            <div class="flex items-center gap-4">
-              <input id="litros-calc" type="number" step="0.01" placeholder="Litros producidos (ej. 1200)" class="px-3 py-2 border rounded-md w-48" />
-              <button id="recalc-btn" class="px-4 py-2 bg-primary text-white rounded-md">Recalcular costo / litro</button>
-              <div id="cost-per-liter-manual" class="ml-6 text-lg font-bold text-primary">$0 / L</div>
-            </div>
-          </div>
-          <!-- Pixel-perfect Metrics + Category grid -->
-          <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Results widget -->
-            <aside class="col-span-1 bg-white rounded-xl p-6 shadow flex flex-col items-start">
-              <div class="w-full flex justify-between items-start">
-                <div>
-                  <div class="text-sm text-gray-500 uppercase tracking-widest">Costo por Litro</div>
-                  <div id="big-cost" class="mt-2 text-5xl font-extrabold text-primary leading-none">$0.00</div>
-                </div>
-                <div class="text-sm text-gray-400">Vista Contable
-                  <label class="inline-flex items-center ml-2">
-                    <input id="view-toggle" type="checkbox" class="hidden" />
-                    <span id="toggle-ui" class="w-12 h-6 bg-gray-200 rounded-full relative block"></span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="w-full mt-6">
-                <div class="text-sm text-gray-600 mb-2">Porcentaje de la categoría seleccionada</div>
-                <div class="w-full bg-gray-100 rounded-full h-4 overflow-hidden">
-                  <div id="cat-progress" class="h-4 bg-green-500 w-0 transition-all"></div>
-                </div>
-                <div id="cat-share" class="mt-2 text-sm text-gray-600">Alimentación: 0%</div>
-              </div>
-
-              <div class="mt-6 w-full">
-                <button id="save-ai" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-lg font-semibold">Guardar y Analizar con IA</button>
-              </div>
-              <div id="ai-result" class="mt-4 w-full text-sm text-gray-700 hidden bg-slate-50 p-3 rounded"></div>
-              <div class="mt-4">
-                <button id="export-btn" class="w-14 h-14 bg-white border-2 border-black font-bold rounded-none flex items-center justify-center">EXPORTAR<br>DATOS</button>
-              </div>
-            </aside>
-
-            <!-- Categories grid -->
-            <section class="col-span-2 bg-white rounded-xl p-6 shadow">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold">Categorías Operativas</h3>
-                <div class="text-sm text-gray-500">Pixel-perfect • Responsive</div>
-              </div>
-
-              <div id="metrics-cards" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- cards injected by JS -->
-              </div>
-            </section>
-          </div>
-          <div class="mt-4 bg-white p-4 rounded text-sm text-gray-700">
-            <strong>Educación financiera:</strong>
-            <div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div><strong>Activo:</strong> Lo que posees y genera valor (terrenos, maquinaria).</div>
-              <div><strong>Pasivo:</strong> Lo que debes (préstamos, deudas).</div>
-              <div><strong>Capital:</strong> Diferencia entre activos y pasivos — patrimonio real.</div>
-            </div>
-          </div>
-
-          <!-- Cost vs Production chart -->
-          <div class="mt-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 class="font-bold text-gray-700 mb-4">Tendencia de Costos vs Producción</h3>
-              <div style="height: 300px;">
-                  <canvas id="costChart"></canvas>
-              </div>
-          </div>
-        </div>
-
-        <!-- Register Expense -->
-        <div id="view-register" class="hidden space-y-6">
-          <h1 class="text-2xl font-bold">Registrar Gasto</h1>
-          <div class="bg-white p-6 rounded-lg shadow max-w-md">
-            <form id="expense-form" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Categoría</label>
-                <select id="cat" class="mt-1 block w-full rounded-md border-gray-300" required>
-                  <option value="Alimentacion">Alimentación</option>
-                  <option value="Mano de Obra">Mano de Obra</option>
-                  <option value="Salud Animal">Salud Animal</option>
-                  <option value="Energia y Combustible">Energía y Combustible</option>
-                  <option value="Agua y Riego">Agua y Riego</option>
-                  <option value="Mantenimiento">Mantenimiento</option>
-                  <option value="Transporte">Transporte</option>
-                  <option value="Administracion">Administración</option>
-                  <option value="Impuestos">Impuestos</option>
-                  <option value="Inversion y Expansion">Inversión y Expansión</option>
-                  <option value="Otros">Otros Gastos</option>
-                </select>
-                <input type="hidden" id="subcat-input" />
-                <div class="mt-2 text-sm text-gray-600">Subcategoría: <span id="selected-subcat">(ninguna)</span> — Código contable: <span id="account-code">—</span></div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Monto (MXN)</label>
-                <input id="amount" type="number" step="0.01" class="mt-1 block w-full rounded-md border-gray-300" required />
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Litros producidos ese día</label>
-                <input id="liters" type="number" step="0.01" class="mt-1 block w-full rounded-md border-gray-300" required />
-              </div>
-
-              <div class="flex items-center gap-2">
-                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md font-semibold">Guardar</button>
-                <button type="button" id="clear-form" class="px-4 py-2 border rounded-md">Limpiar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Category panel with subcategories -->
-          <div class="mt-8 bg-white p-6 rounded-lg shadow">
-          <h3 class="font-bold mb-4">Categorías de Gastos (selecciona para ver subcategorías)</h3>
-          <div id="category-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <!-- Buttons will be injected by JS -->
-          </div>
-          <div id="subcat-panel" class="mt-4 hidden bg-gray-50 p-4 rounded">
-            <div id="subcat-title" class="font-semibold mb-2"></div>
-            <div id="subcat-list" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
-          </div>
-        </div>
-
-          <!-- Simulator square slider -->
-          <div class="mt-8 bg-white p-6 rounded-lg shadow max-w-3xl">
-            <h3 class="font-bold mb-4">Simulador de Alimento</h3>
-            <div class="aspect-square bg-gray-50 p-6 rounded flex flex-col items-center justify-center">
-              <div class="text-sm text-gray-600 mb-4 text-center">Desliza para ver qué pasa si el costo del alimento (tu gasto del 60%) sube</div>
-              <input id="sim-slider" type="range" min="0" max="50" value="10" class="w-full" />
-            </div>
-          </div>
-
-        <!-- Simulator -->
-        <div id="view-sim" class="hidden space-y-6">
-          <h1 class="text-2xl font-bold">Simulador: impacto del aumento en Alimento</h1>
-          <div class="bg-white p-6 rounded-lg shadow max-w-2xl">
-            <label class="block text-sm text-gray-600">Aumento en costo de Alimento: <span id="sim-percent">10%</span></label>
-            <input id="sim-slider" type="range" min="0" max="50" value="10" class="w-full mt-2" />
-
-            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 bg-gray-50 rounded">
-                <div class="text-sm text-gray-500">Gasto Total Actual</div>
-                <div id="sim-current-total" class="text-xl font-bold text-primary">$0</div>
-              </div>
-
-              <div class="p-4 bg-gray-50 rounded">
-                <div class="text-sm text-gray-500">Gasto Total Simulado</div>
-                <div id="sim-new-total" class="text-xl font-bold text-primary">$0</div>
-              </div>
-            </div>
-
-            <div class="mt-4 text-sm text-gray-600">Nota: el simulador asume que el aumento aplica solo a gastos con categoría <strong>Alimento</strong>.</div>
-          </div>
-        </div>
-
-        <!-- Plans -->
-        <div id="view-plans" class="hidden space-y-6">
-          <h1 class="text-2xl font-bold">Planes</h1>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="p-8 border-2 border-slate-100 aspect-square flex flex-col items-center justify-center">
-                <h4 class="font-black uppercase tracking-widest mb-4">Básico</h4>
-                <p class="text-3xl font-black mb-2">$990</p>
-                <div class="text-sm text-gray-600 mb-4">Hasta 100 animales</div>
-                <button class="w-32 h-10 bg-white border-2 border-black font-bold rounded-none">Seleccionar</button>
-            </div>
-            <div class="p-8 bg-slate-900 text-white aspect-square flex flex-col items-center justify-center">
-                <h4 class="font-black uppercase tracking-widest mb-4 text-blue-400">Estándar</h4>
-                <p class="text-3xl font-black mb-2">$1,990</p>
-                <div class="text-sm text-white/80 mb-4">101-500 animales</div>
-                <button class="w-32 h-10 bg-white text-slate-900 font-bold rounded-none">Seleccionar</button>
-            </div>
-            <div class="p-8 border-2 border-slate-100 aspect-square flex flex-col items-center justify-center">
-                <h4 class="font-black uppercase tracking-widest mb-4">Profesional</h4>
-                <p class="text-3xl font-black mb-2">$3,999</p>
-                <div class="text-sm text-gray-600 mb-4">Más de 500 animales</div>
-                <button class="w-32 h-10 bg-white border-2 border-black font-bold rounded-none">Seleccionar</button>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-
-                      
-    <script>
-      // Point the UI to the server-side API
-      document.getElementById('sb-url').textContent = '/api/expenses';
-
-      // UI routing
-      const views = ['dashboard','register','sim','plans'];
-      function show(view){
-        views.forEach(v=>{
-          const el = document.getElementById('view-' + v);
-          if(el) el.classList.toggle('hidden', v !== view);
-        });
-      }
-      document.getElementById('btn-dashboard').addEventListener('click', ()=> show('dashboard'));
-      document.getElementById('btn-register').addEventListener('click', ()=> show('register'));
-      document.getElementById('btn-sim').addEventListener('click', ()=> show('sim'));
-      document.getElementById('btn-plans').addEventListener('click', ()=> show('plans'));
-
-      // Fetch and compute via server API
-      async function fetchExpenses(){
-        try{
-          const res = await fetch('/api/expenses');
-          if(!res.ok){ console.error('API error', res.status); return []; }
-          return await res.json();
-        }catch(e){ console.error(e); return []; }
-      }
-
-      async function refreshDashboard(){
-        const rows = await fetchExpenses();
-        const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
-        const liters = rows.reduce((s,r)=> s + Number(r.liters || 0), 0);
-        const costPerLiter = liters ? (total / liters) : 0;
-        document.getElementById('total-expense').textContent = '$' + total.toFixed(2);
-        document.getElementById('total-liters').textContent = liters.toFixed(2) + ' L';
-        document.getElementById('cost-per-liter').textContent = '$' + costPerLiter.toFixed(2) + ' / L';
-
-        // simulator initial values
-        document.getElementById('sim-current-total').textContent = '$' + total.toFixed(2);
-        updateSimulator();
-
-        // Prepare data for Chart.js (group by date)
-        try{
-          const grouped = {};
-          rows.forEach(r => {
-            const d = r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : (r.createdAt ? new Date(r.createdAt).toISOString().split('T')[0] : 'unknown');
-            if(!grouped[d]) grouped[d] = {amount:0, liters:0};
-            grouped[d].amount += Number(r.amount || 0);
-            grouped[d].liters += Number(r.liters || 0);
-          });
-          const labels = Object.keys(grouped).sort();
-          const dataAmount = labels.map(l => grouped[l].amount);
-          const dataLiters = labels.map(l => grouped[l].liters);
-
-          if(window.costChart){
-            window.costChart.data.labels = labels;
-            window.costChart.data.datasets[0].data = dataAmount;
-            window.costChart.data.datasets[1].data = dataLiters;
-            window.costChart.update();
-          } else {
-            const ctx = document.getElementById('costChart').getContext('2d');
-            window.costChart = new Chart(ctx, {
-              data: {
-                labels: labels,
-                datasets: [
-                  { type: 'bar', label: 'Gasto (MXN)', data: dataAmount, backgroundColor: '#1460CC' },
-                  { type: 'line', label: 'Litros', data: dataLiters, borderColor: '#10B981', backgroundColor: 'transparent', yAxisID: 'y1' }
-                ]
-              },
-              options: {
-                responsive: true,
-                scales: {
-                  y: { position: 'left', title: { display: true, text: 'MXN' } },
-                  y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Litros' } }
-                }
-              }
-            });
-          }
-        }catch(e){ console.error('Chart render error', e); }
-      }
-
-      // Category definitions and accounting code mapping
-      const CATEGORY_DEFS = [
-        { key: 'Alimentacion', label: 'Alimentación', sub: ['Sorgo','Alfalfa','Forraje','Alimento balanceado','Minerales'], code: '601', note: '60% aproximado del costo' },
-        { key: 'Mano de Obra', label: 'Mano de Obra', sub: ['Sueldos','Jornaleros','Bonos','Prestaciones','IMSS'], code: '602' },
-        { key: 'Salud Animal', label: 'Salud Animal', sub: ['Veterinario','Medicamentos','Vacunas','Inseminación'], code: '603' },
-        { key: 'Energia y Combustible', label: 'Energía y Combustible', sub: ['Electricidad','Diesel','Gas','Maquinaria'], code: '604' },
-        { key: 'Agua y Riego', label: 'Agua y Riego', sub: ['Pozo','Sistema de riego','Bombas'], code: '605' },
-        { key: 'Mantenimiento', label: 'Mantenimiento', sub: ['Reparación de maquinaria','Corrales','Instalaciones'], code: '606' },
-        { key: 'Transporte', label: 'Transporte', sub: ['Fletes','Acarreos','Combustible transporte'], code: '607' },
-        { key: 'Administracion', label: 'Administración', sub: ['Contabilidad','Software','Servicios profesionales'], code: '608' },
-        { key: 'Impuestos', label: 'Impuestos', sub: ['ISR','Impuesto sobre nómina','Predial'], code: '609' },
-        { key: 'Inversion y Expansion', label: 'Inversión y Expansión', sub: ['Terrenos','Construcción','Maquinaria nueva'], code: '610', excludeFromCost:true },
-        { key: 'Otros', label: 'Otros Gastos', sub: ['Campo libre'], code: '699' }
-      ];
-
-      function renderCategoryGrid(){
-        const grid = document.getElementById('category-grid');
-        grid.innerHTML = '';
-        CATEGORY_DEFS.forEach(cat => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'px-4 py-3 bg-gray-50 border rounded text-left font-semibold';
-          btn.textContent = cat.label + (cat.note ? ' •' : '');
-          btn.dataset.key = cat.key;
-          btn.addEventListener('click', ()=> showSubcats(cat.key));
-          grid.appendChild(btn);
-        });
-      }
-
-      function showSubcats(key){
-        const cat = CATEGORY_DEFS.find(c=> c.key === key);
-        if(!cat) return;
-        document.getElementById('subcat-title').textContent = cat.label;
-        const list = document.getElementById('subcat-list');
-        list.innerHTML = '';
-        cat.sub.forEach(s=>{
-          const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'px-3 py-2 border rounded text-sm text-left';
-          b.textContent = s;
-          b.addEventListener('click', ()=> selectSubcat(cat, s));
-          list.appendChild(b);
-        });
-        document.getElementById('subcat-panel').classList.remove('hidden');
-      }
-
-      function selectSubcat(cat, sub){
-        document.getElementById('selected-subcat').textContent = sub;
-        document.getElementById('account-code').textContent = cat.code;
-        document.getElementById('subcat-input').value = sub;
-        // set main select to category key
-        const sel = document.getElementById('cat');
-        sel.value = cat.key;
-      }
-
-      renderCategoryGrid();
-
-      // Register expense via server API — include subcategory in stored category string
-      document.getElementById('expense-form').addEventListener('submit', async function(e){
-        e.preventDefault();
-        const category = document.getElementById('cat').value;
-        const subcat = document.getElementById('subcat-input').value || '';
-        const amount = parseFloat(document.getElementById('amount').value) || 0;
-        const liters = parseFloat(document.getElementById('liters').value) || 0;
-        const payloadCategory = subcat ? `${category} - ${subcat}` : category;
-
-        try{
-          const res = await fetch('/api/expenses', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category: payloadCategory, amount, liters })
-          });
-          if(!res.ok){ const err = await res.text(); alert('Error: ' + err); return; }
-          alert('Gasto guardado');
-          document.getElementById('expense-form').reset();
-          document.getElementById('selected-subcat').textContent = '(ninguna)';
-          document.getElementById('account-code').textContent = '—';
-          document.getElementById('subcat-input').value = '';
-          await refreshDashboard();
-          show('dashboard');
-        }catch(err){ console.error(err); alert('Error conectando con la API'); }
-      });
-
-      document.getElementById('clear-form').addEventListener('click', ()=> document.getElementById('expense-form').reset());
-
-      // Simulator
-      const simSlider = document.getElementById('sim-slider');
-      const simPercent = document.getElementById('sim-percent');
-      simSlider.addEventListener('input', ()=>{ simPercent.textContent = simSlider.value + '%'; updateSimulator(); });
-
-      async function updateSimulator(){
-        const pct = parseFloat(simSlider.value) || 0;
-        const rows = await fetchExpenses();
-        const total = rows.reduce((s,r)=> s + Number(r.amount || 0), 0);
-        const foodTotal = rows.filter(r=> /aliment/i.test(r.category)).reduce((s,r)=> s + Number(r.amount || 0), 0);
-        const newFood = foodTotal * (1 + pct/100);
-        const newTotal = total - foodTotal + newFood;
-        document.getElementById('sim-new-total').textContent = '$' + newTotal.toFixed(2);
-      }
-
-      // Recalculate cost per liter from manual litros input, excluding Inversión
-      document.getElementById('recalc-btn').addEventListener('click', async ()=>{
-        const litrosVal = parseFloat(document.getElementById('litros-calc').value) || 0;
-        const rows = await fetchExpenses();
-        const total = rows.filter(r => !/inversion/i.test(r.category)).reduce((s,r)=> s + Number(r.amount || 0), 0);
-        const costPer = litrosVal ? (total / litrosVal) : 0;
-        document.getElementById('cost-per-liter-manual').textContent = '$' + costPer.toFixed(2) + ' / L';
-      });
-
-      // build metric cards for the new UI
-      function renderMetricCards(){
-        const container = document.getElementById('metrics-cards');
-        container.innerHTML = '';
-        CATEGORY_DEFS.forEach(cat=>{
-          const card = document.createElement('div');
-          card.className = 'p-4 border rounded-lg shadow-sm hover:shadow-md transition bg-white';
-          card.innerHTML = `
-            <div class="flex items-start gap-3">
-              <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center"> 
-                <svg class="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M3 12h18M3 17h18"/></svg>
-              </div>
-              <div class="flex-1">
-                <div class="font-semibold text-sm text-gray-800">${cat.label}</div>
-                <div class="mt-2 flex items-center gap-2">
-                  <input data-key="${cat.key}" type="number" min="0" step="0.01" placeholder="0.00" class="w-28 px-2 py-1 border rounded text-right font-black text-lg" />
-                  <button type="button" class="px-3 py-1 text-sm border rounded subcat-btn">Subcategorías</button>
-                </div>
-              </div>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-      }
-
-      renderMetricCards();
-
-      // wire interactions for metric cards
-      document.getElementById('metrics-cards').addEventListener('click', (e)=>{
-        const btn = e.target.closest('.subcat-btn');
-        if(!btn) return;
-        const card = btn.closest('div[p]') || btn.closest('div');
-        const key = card.querySelector('input')?.dataset?.key;
-        if(key) showSubcats(key);
-      });
-
-      // compute big cost and progress when values change
-      document.getElementById('metrics-cards').addEventListener('input', async (e)=>{
-        if(e.target.tagName !== 'INPUT') return;
-        // collect sums from card inputs
-        const inputs = Array.from(document.querySelectorAll('#metrics-cards input[data-key]'));
-        const catSums = {};
-        let total = 0;
-        inputs.forEach(inp => {
-          const val = parseFloat(inp.value) || 0;
-          catSums[inp.dataset.key] = (catSums[inp.dataset.key] || 0) + val;
-          total += val;
-        });
-        // update big cost using latest litros manual if provided
-        const manualLitros = parseFloat(document.getElementById('litros-calc').value) || 0;
-        const costPer = manualLitros ? (total / manualLitros) : 0;
-        document.getElementById('big-cost').textContent = '$' + costPer.toFixed(2);
-
-        // if a category is selected show its share
-        const selected = document.getElementById('selected-subcat').textContent || '';
-        const selKey = document.getElementById('cat')?.value || null;
-        if(selKey){
-          const share = total ? ((catSums[selKey] || 0) / total) * 100 : 0;
-          document.getElementById('cat-progress').style.width = Math.min(100, share) + '%';
-          const label = (CATEGORY_DEFS.find(c=>c.key===selKey)||{}).label || selKey;
-          document.getElementById('cat-share').textContent = `${label}: ${share.toFixed(1)}%`;
-        }
-      });
-
-      // Save & Analyze with IA — posts each non-zero card to /api/expenses then calls /api/chat
-      document.getElementById('save-ai').addEventListener('click', async ()=>{
-        const btn = document.getElementById('save-ai');
-        btn.disabled = true; btn.textContent = 'Enviando...';
-        const inputs = Array.from(document.querySelectorAll('#metrics-cards input[data-key]'));
-        const categories = [];
-        let total = 0;
-        for(const inp of inputs){
-          const amount = parseFloat(inp.value) || 0;
-          if(amount <= 0) continue;
-          const key = inp.dataset.key;
-          total += amount;
-          categories.push({ key: CATEGORY_DEFS.find(c=>c.key===key).label, amount });
-          // save as expense (category-only, liters 0)
-          await fetch('/api/expenses',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ category: key, amount, liters:0 }) });
-        }
-        // call AI endpoint
-        try{
-          const res = await fetch('/api/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ total, categories }) });
-          const json = await res.json();
-          document.getElementById('ai-result').classList.remove('hidden');
-          document.getElementById('ai-result').innerHTML = json.messages.map(m=>`<div>• ${m}</div>`).join('');
-        }catch(e){ console.error(e); alert('Error al analizar con IA'); }
-        btn.disabled = false; btn.textContent = 'Guardar y Analizar con IA';
-      });
-// === INICIO: LÓGICA DEL BOTÓN DE BIENVENIDA ===
-      document.getElementById('btn-quick-save').addEventListener('click', async function() {
-        // 1. Tomar los valores que escribió el dueño del rancho
-        const gasto = parseFloat(document.getElementById('quick-gasto').value) || 0;
-        const litros = parseFloat(document.getElementById('quick-litros').value) || 0;
-
-        // 2. Validar que no estén vacíos o en cero
-        if(gasto === 0 || litros === 0) {
-          alert("¡Ojo! Por favor, ingresa tus gastos y litros para poder calcular.");
-          return; // Detiene el proceso si faltan datos
-        }
-
-        // 3. Cambiar el texto del botón para que sepa que está cargando
-        const btn = document.getElementById('btn-quick-save');
-        const textoOriginal = btn.textContent;
-        btn.textContent = "Guardando... ⏳";
-        btn.disabled = true; // Evita que le den doble clic por error
-
-        try {
-          // 4. Mandar los datos a tu base de datos (Supabase) usando la conexión que ya tienes
-          const res = await fetch('/api/expenses', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category: 'Gasto Rápido', amount: gasto, liters: litros })
-          });
-
-          if(!res.ok) {
-            alert('Hubo un error al guardar en la base de datos.');
-          } else {
-            // 5. Si todo salió bien, limpiamos los cuadros de texto para que queden en blanco
-            document.getElementById('quick-gasto').value = '';
-            document.getElementById('quick-litros').value = '';
-            
-            // 6. Actualizamos los Dashboards mágicamente para que vean sus resultados
-            await refreshDashboard();
-            alert('¡Listo! Datos guardados. Revisa tus números en el Dashboard. 🐄');
-          }
-        } catch(err) {
-          console.error(err);
-          alert('Error de conexión.');
-        }
-
-        // 7. Regresar el botón a la normalidad
-        btn.textContent = textoOriginal;
-        btn.disabled = false;
-      });
-      // === FIN: LÓGICA DEL BOTÓN DE BIENVENIDA ===
-
-      // Initial load
-      refreshDashboard();
-      show('dashboard');
-
-      // Export CSV handler (downloads Reporte_DairyControl.csv)
-      document.getElementById('export-btn').addEventListener('click', async function(){
-        const btn = this;
-        try{
-          btn.disabled = true;
-          btn.textContent = 'DESCARGANDO';
-          const res = await fetch('/api/export');
-          if(!res.ok) throw new Error('Error al generar CSV');
-          const blob = await res.blob();
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'Reporte_DairyControl.csv';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          window.URL.revokeObjectURL(url);
-          // show success toast
-          showToast('ÉXITO: Reporte listo para el contador');
-        }catch(e){
-          console.error(e);
-          showToast('ERROR: No se pudo descargar el reporte');
-        }finally{
-          btn.disabled = false;
-          btn.innerHTML = 'EXPORTAR<br>DATOS';
-        }
-      });
-
-      // Toast helper
-      function showToast(message){
-        let t = document.getElementById('dc-toast');
-        if(!t){
-          t = document.createElement('div');
-          t.id = 'dc-toast';
-          t.className = 'fixed top-6 right-6 bg-blue-600 text-white px-4 py-3 rounded shadow-lg z-50';
-          document.body.appendChild(t);
-        }
-        t.textContent = message;
-        t.style.opacity = '1';
-        t.classList.add('animate-pulse');
-        setTimeout(()=>{ t.style.transition = 'opacity 400ms'; t.style.opacity = '0'; }, 4000);
-      }
-    </script>
-  </body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DairyControl Pro | Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -775,30 +78,54 @@ Haz esto y dime si por fin ves tu hermoso cuadro azul de bienvenida en la pantal
                 <div class="h-1 w-10 bg-blue-600 mx-auto"></div>
             </div>
         </section> 
-        <section id="metrics" class="space-y-1">
-          <div class="mb-20 pt-10">
-    <h2 class="text-8xl font-black tracking-tighter text-slate-900 uppercase leading-none">
-        CALCULA TUS<br><span class="text-blue-600">GASTOS.</span>
-    </h2>
-    <div class="h-3 w-40 bg-blue-600 mt-8 square"></div>
-</div>
-            <div class="grid grid-cols-1 md:grid-cols-3">
+
+        <section id="metrics" class="space-y-12">
+            <div class="mb-10 pt-10">
+                <h2 class="text-8xl font-black tracking-tighter text-slate-900 uppercase leading-none">
+                    CALCULA TUS<br><span class="text-blue-600">GASTOS.</span>
+                </h2>
+                <div class="h-3 w-40 bg-blue-600 mt-8 square"></div>
+            </div>
+
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 text-center shadow-sm">
+                <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
+                <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
+
+                <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
+                    <div class="flex flex-col text-left">
+                        <label class="font-bold text-gray-700 mb-1">¿Cuánto gastaste? ($ MXN)</label>
+                        <input id="quick-gasto" type="number" placeholder="Ej. 5000" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
+                    </div>
+
+                    <div class="flex flex-col text-left">
+                        <label class="font-bold text-gray-700 mb-1">¿Cuántos litros produjiste?</label>
+                        <input id="quick-litros" type="number" placeholder="Ej. 1200" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
+                    </div>
+
+                    <button id="btn-quick-save" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 h-14">
+                        Calcular y Guardar
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0">
                 <div class="bg-blue-600 p-16 text-white square">
                     <p class="uppercase text-[10px] font-black tracking-widest mb-4 opacity-70">Gasto Mensual</p>
-                    <h3 class="text-4xl font-black">$128,500</h3>
+                    <h3 class="text-4xl font-black" id="total-expense">$0.00</h3>
                     <p class="text-[9px] mt-2 italic">"Lo que ha salido del rancho este mes"</p>
                 </div>
                 <div class="bg-white p-16 text-slate-900 border border-slate-100 square">
                     <p class="text-slate-400 uppercase text-[10px] font-black tracking-widest mb-4">Producción</p>
-                    <h3 class="text-4xl font-black">4,500 L</h3>
+                    <h3 class="text-4xl font-black" id="total-liters">0 L</h3>
                     <p class="text-[9px] mt-2 italic text-slate-400">"Tu volumen de producción actual"</p>
                 </div>
                 <div class="bg-slate-900 p-16 text-white square">
                     <p class="text-blue-500 uppercase text-[10px] font-black tracking-widest mb-4">Costo / Litro</p>
-                    <h3 class="text-4xl font-black text-blue-500">$28.56</h3>
+                    <h3 class="text-4xl font-black text-blue-500" id="cost-per-liter">$0.00</h3>
                     <p class="text-[9px] mt-2 italic text-slate-500">"Tu métrica de éxito"</p>
                 </div>
             </div>
+
             <div class="flex justify-end p-4">
                 <button onclick="exportData()" class="w-14 h-14 bg-white border-2 border-slate-900 font-black square hover:bg-slate-900 hover:text-white transition-all">
                     <i class="fas fa-file-export"></i>
@@ -841,7 +168,7 @@ Haz esto y dime si por fin ves tu hermoso cuadro azul de bienvenida en la pantal
     </main>
 
     <script>
-        // Función de Toast para feedback visual
+        // Función de Toast para feedback visual (Mensajes de éxito)
         function showToast(message) {
             const t = document.createElement('div');
             t.className = 'fixed bottom-10 right-10 bg-blue-600 text-white px-6 py-4 font-black square z-[100] shadow-2xl';
@@ -850,17 +177,44 @@ Haz esto y dime si por fin ves tu hermoso cuadro azul de bienvenida en la pantal
             setTimeout(() => { t.style.transition = 'opacity 500ms'; t.style.opacity = '0'; setTimeout(() => t.remove(), 500); }, 3000);
         }
 
+        // Lógica del Simulador (ahora usa el costo calculado real como base)
         function updateSim(val) {
-            const base = 28.56;
+            const base = parseFloat(document.getElementById('cost-per-liter').innerText.replace('$','')) || 28.56;
             const res = (base + (base * (val/100) * 0.6)).toFixed(2);
             document.getElementById('simResult').innerText = '$' + res;
         }
 
-        async function exportData() {
+        // Lógica Exportar (se mantiene demo)
+        function exportData() {
             showToast("GENERANDO REPORTE...");
-            // Simulación de descarga (Aquí va tu lógica de API)
             setTimeout(() => { showToast("ÉXITO: Reporte listo para el contador"); }, 1500);
         }
+
+        // NUEVA LÓGICA: Darle vida al botón de "Bienvenido!"
+        document.getElementById('btn-quick-save').addEventListener('click', function() {
+            // 1. Tomar los valores que escribió el dueño del rancho
+            const gasto = parseFloat(document.getElementById('quick-gasto').value) || 0;
+            const litros = parseFloat(document.getElementById('quick-litros').value) || 0;
+
+            // 2. Validar que no estén vacíos
+            if(gasto === 0 || litros === 0) {
+                alert("Por favor, ingresa tus gastos y litros para poder calcular.");
+                return;
+            }
+
+            // 3. Actualizar los tableros gigantes mágicamente
+            document.getElementById('total-expense').textContent = '$' + gasto.toFixed(2);
+            document.getElementById('total-liters').textContent = litros.toFixed(2) + ' L';
+            document.getElementById('cost-per-liter').textContent = '$' + (gasto / litros).toFixed(2);
+            
+            // 4. Actualizar el simulador con base en el nuevo costo calculado
+            updateSim(document.querySelector('input[type="range"]').value);
+
+            // 5. Limpiar los cuadros de texto
+            document.getElementById('quick-gasto').value = '';
+            document.getElementById('quick-litros').value = '';
+            showToast('¡Datos calculados y actualizados!');
+        });
     </script>
 </body>
 </html>
