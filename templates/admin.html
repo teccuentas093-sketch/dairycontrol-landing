@@ -558,7 +558,54 @@
         }catch(e){ console.error(e); alert('Error al analizar con IA'); }
         btn.disabled = false; btn.textContent = 'Guardar y Analizar con IA';
       });
+// === INICIO: LÓGICA DEL BOTÓN DE BIENVENIDA ===
+      document.getElementById('btn-quick-save').addEventListener('click', async function() {
+        // 1. Tomar los valores que escribió el dueño del rancho
+        const gasto = parseFloat(document.getElementById('quick-gasto').value) || 0;
+        const litros = parseFloat(document.getElementById('quick-litros').value) || 0;
 
+        // 2. Validar que no estén vacíos o en cero
+        if(gasto === 0 || litros === 0) {
+          alert("¡Ojo! Por favor, ingresa tus gastos y litros para poder calcular.");
+          return; // Detiene el proceso si faltan datos
+        }
+
+        // 3. Cambiar el texto del botón para que sepa que está cargando
+        const btn = document.getElementById('btn-quick-save');
+        const textoOriginal = btn.textContent;
+        btn.textContent = "Guardando... ⏳";
+        btn.disabled = true; // Evita que le den doble clic por error
+
+        try {
+          // 4. Mandar los datos a tu base de datos (Supabase) usando la conexión que ya tienes
+          const res = await fetch('/api/expenses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category: 'Gasto Rápido', amount: gasto, liters: litros })
+          });
+
+          if(!res.ok) {
+            alert('Hubo un error al guardar en la base de datos.');
+          } else {
+            // 5. Si todo salió bien, limpiamos los cuadros de texto para que queden en blanco
+            document.getElementById('quick-gasto').value = '';
+            document.getElementById('quick-litros').value = '';
+            
+            // 6. Actualizamos los Dashboards mágicamente para que vean sus resultados
+            await refreshDashboard();
+            alert('¡Listo! Datos guardados. Revisa tus números en el Dashboard. 🐄');
+          }
+        } catch(err) {
+          console.error(err);
+          alert('Error de conexión.');
+        }
+
+        // 7. Regresar el botón a la normalidad
+        btn.textContent = textoOriginal;
+        btn.disabled = false;
+      });
+      // === FIN: LÓGICA DEL BOTÓN DE BIENVENIDA ===
+      
       // Initial load
       refreshDashboard();
       show('dashboard');
