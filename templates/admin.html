@@ -71,6 +71,32 @@
             </div>
           </div>
           ```
+
+4. Presiona **Cmd + S** para guardar. 
+5. Abre la página en tu navegador (pegando la ruta en la barra de hasta arriba, no en Google).
+
+Haz esto y dime si por fin ves tu hermoso cuadro azul de bienvenida en la pantalla. ¡Ya casi coronamos este paso!
+          <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8 text-center shadow-sm">
+            <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
+            <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
+              <div class="flex flex-col text-left">
+                <label class="font-bold text-gray-700 mb-1">¿Cuánto gastaste? ($ MXN)</label>
+                <input id="quick-gasto" type="number" placeholder="Ej. 5000" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
+              </div>
+
+              <div class="flex flex-col text-left">
+                <label class="font-bold text-gray-700 mb-1">¿Cuántos litros produjiste?</label>
+                <input id="quick-litros" type="number" placeholder="Ej. 1200" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
+              </div>
+
+              <button id="btn-quick-save" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 h-14">
+                Calcular y Guardar
+              </button>
+            </div>
+          </div>
+          ```
 <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8 text-center shadow-sm">
             <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
             <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
