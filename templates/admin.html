@@ -50,6 +50,27 @@
       <main class="flex-1 p-8">
         <div id="view-dashboard" class="space-y-6">
           <h1 class="text-2xl font-bold">Dashboard</h1>
+<div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 mb-8 text-center shadow-sm">
+            <h2 class="text-3xl font-black text-blue-800 mb-2">¡Bienvenido! Cuéntanos sobre tu rancho 🐄</h2>
+            <p class="text-gray-600 mb-6">Ingresa tus datos rápidos del día o del mes para calcular tu rentabilidad al instante.</p>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-end">
+              <div class="flex flex-col text-left">
+                <label class="font-bold text-gray-700 mb-1">¿Cuánto gastaste? ($ MXN)</label>
+                <input id="quick-gasto" type="number" placeholder="Ej. 5000" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
+              </div>
+
+              <div class="flex flex-col text-left">
+                <label class="font-bold text-gray-700 mb-1">¿Cuántos litros produjiste?</label>
+                <input id="quick-litros" type="number" placeholder="Ej. 1200" class="px-4 py-3 border-2 rounded-lg text-lg w-64 focus:border-blue-500 focus:outline-none">
+              </div>
+
+              <button id="btn-quick-save" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 h-14">
+                Calcular y Guardar
+              </button>
+            </div>
+          </div>
+          ```
           <h2 class="text-xl font-extrabold text-gray-700">Calcula tus costos y gastos</h2>
 
           <!-- Three massive square blocks (single vertical flow) -->
@@ -587,4 +608,165 @@
     </script>
   </body>
 </html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DairyControl Pro | Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; }
+        .square { border-radius: 0px !important; }
+        .video-hero {
+            position: relative; height: 100vh; width: 100%; overflow: hidden; background: #000;
+        }
+        video {
+            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
+            transform: translate(-50%, -50%); object-fit: cover; opacity: 0.5;
+        }
+        .animate-pulse-custom { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
 
+    <header class="sticky top-0 z-50 bg-white border-b border-slate-100 p-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 w-10 h-10 flex items-center justify-center square">
+                    <i class="fas fa-cow text-white"></i>
+                </div>
+                <span class="text-2xl font-black tracking-tighter text-blue-600 uppercase">DairyControl</span>
+            </div>
+            <nav class="hidden md:flex space-x-8 text-[10px] font-black uppercase tracking-[0.2em]">
+                <a href="#about" class="hover:text-blue-600">Nosotros</a>
+                <a href="#metrics" class="hover:text-blue-600">Métricas</a>
+                <a href="#simulator" class="hover:text-blue-600">Simulador</a>
+                <a href="#pricing" class="hover:text-blue-600">Planes</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="video-hero">
+        <video autoplay muted loop playsinline>
+            <source src="/Dairy1.mp4" type="video/mp4">
+        </video>
+        <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+            <h1 class="text-white text-7xl font-black tracking-tighter mb-4 uppercase">Control Total.<br>Rentabilidad Real.</h1>
+            <div class="h-2 w-32 bg-blue-600 mb-8 square"></div>
+            <p class="text-blue-400 font-black tracking-[0.5em] uppercase text-xs">La Laguna, México</p>
+        </div>
+    </section>
+
+    <main class="max-w-6xl mx-auto px-6 py-32 space-y-48">
+
+        <section id="about" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-12 square border border-slate-100 shadow-sm text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase mb-4">Nuestra Visión</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-6 uppercase">Shape the future</h3>
+                <div class="h-1 w-10 bg-blue-600 mx-auto"></div>
+            </div>
+            <div class="bg-white p-12 square border border-slate-100 shadow-sm text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase mb-4">Nuestros Equipos</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-6 uppercase">Make real <span class="text-blue-600">impact</span></h3>
+                <div class="h-1 w-10 bg-blue-600 mx-auto"></div>
+            </div>
+            <div class="bg-white p-12 square border border-slate-100 shadow-sm text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase mb-4">Nuestra Cultura</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-6 uppercase">Find your place</h3>
+                <div class="h-1 w-10 bg-blue-600 mx-auto"></div>
+            </div>
+        </section> 
+        <section id="metrics" class="space-y-1">
+          <div class="mb-20 pt-10">
+    <h2 class="text-8xl font-black tracking-tighter text-slate-900 uppercase leading-none">
+        CALCULA TUS<br><span class="text-blue-600">GASTOS.</span>
+    </h2>
+    <div class="h-3 w-40 bg-blue-600 mt-8 square"></div>
+</div>
+            <div class="grid grid-cols-1 md:grid-cols-3">
+                <div class="bg-blue-600 p-16 text-white square">
+                    <p class="uppercase text-[10px] font-black tracking-widest mb-4 opacity-70">Gasto Mensual</p>
+                    <h3 class="text-4xl font-black">$128,500</h3>
+                    <p class="text-[9px] mt-2 italic">"Lo que ha salido del rancho este mes"</p>
+                </div>
+                <div class="bg-white p-16 text-slate-900 border border-slate-100 square">
+                    <p class="text-slate-400 uppercase text-[10px] font-black tracking-widest mb-4">Producción</p>
+                    <h3 class="text-4xl font-black">4,500 L</h3>
+                    <p class="text-[9px] mt-2 italic text-slate-400">"Tu volumen de producción actual"</p>
+                </div>
+                <div class="bg-slate-900 p-16 text-white square">
+                    <p class="text-blue-500 uppercase text-[10px] font-black tracking-widest mb-4">Costo / Litro</p>
+                    <h3 class="text-4xl font-black text-blue-500">$28.56</h3>
+                    <p class="text-[9px] mt-2 italic text-slate-500">"Tu métrica de éxito"</p>
+                </div>
+            </div>
+            <div class="flex justify-end p-4">
+                <button onclick="exportData()" class="w-14 h-14 bg-white border-2 border-slate-900 font-black square hover:bg-slate-900 hover:text-white transition-all">
+                    <i class="fas fa-file-export"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="simulator">
+            <div class="border-[6px] border-slate-900 p-16 grid grid-cols-1 md:grid-cols-2 gap-20">
+                <div>
+                    <h3 class="text-3xl font-black uppercase mb-8">Simulador de Costos</h3>
+                    <p class="text-slate-500 mb-10 text-xs font-bold uppercase">Desliza para ver qué pasa si el costo del alimento (tu gasto del 60%) sube.</p>
+                    <input type="range" min="0" max="50" value="0" class="w-full h-4 bg-slate-100 appearance-none cursor-pointer accent-blue-600 square" oninput="updateSim(this.value)">
+                </div>
+                <div class="bg-slate-900 p-12 flex flex-col justify-center items-center text-white square">
+                    <span class="text-[10px] font-black text-blue-500 uppercase mb-4 tracking-widest">Costo Proyectado / Litro</span>
+                    <div class="text-7xl font-black" id="simResult">$28.56</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="grid grid-cols-1 md:grid-cols-3 gap-0">
+            <div class="p-16 border border-slate-200 square text-center">
+                <h4 class="font-black text-[10px] uppercase mb-8">Básico</h4>
+                <p class="text-4xl font-black mb-12">$990</p>
+                <p class="text-[9px] text-slate-400 uppercase font-bold">Hasta 100 animales</p>
+            </div>
+            <div class="p-16 bg-blue-600 text-white square scale-105 z-10 text-center">
+                <h4 class="font-black text-[10px] uppercase mb-8 opacity-70">Estándar</h4>
+                <p class="text-4xl font-black mb-12">$1,990</p>
+                <p class="text-[9px] opacity-70 uppercase font-bold text-white">101 - 500 animales</p>
+            </div>
+            <div class="p-16 border border-slate-200 square text-center">
+                <h4 class="font-black text-[10px] uppercase mb-8 text-slate-400">Pro</h4>
+                <p class="text-4xl font-black mb-12">$3,999</p>
+                <p class="text-[9px] text-slate-400 uppercase font-bold">Más de 500 animales</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Función de Toast para feedback visual
+        function showToast(message) {
+            const t = document.createElement('div');
+            t.className = 'fixed bottom-10 right-10 bg-blue-600 text-white px-6 py-4 font-black square z-[100] shadow-2xl';
+            t.textContent = message;
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.transition = 'opacity 500ms'; t.style.opacity = '0'; setTimeout(() => t.remove(), 500); }, 3000);
+        }
+
+        function updateSim(val) {
+            const base = 28.56;
+            const res = (base + (base * (val/100) * 0.6)).toFixed(2);
+            document.getElementById('simResult').innerText = '$' + res;
+        }
+
+        async function exportData() {
+            showToast("GENERANDO REPORTE...");
+            // Simulación de descarga (Aquí va tu lógica de API)
+            setTimeout(() => { showToast("ÉXITO: Reporte listo para el contador"); }, 1500);
+        }
+    </script>
+</body>
+</html>
